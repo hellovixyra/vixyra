@@ -510,5 +510,14 @@
 
     <!-- Load Application JavaScript -->
     <script src="app.js"></script>
+    <script>
+      // Diagnostic: Check if everything loaded
+      window.addEventListener('load', function() {
+        console.log('✅ Page loaded');
+        console.log('✅ Canvas element:', document.getElementById('canvas') ? 'Found' : 'NOT FOUND');
+        console.log('✅ app.js loaded:', typeof loadFabricJS !== 'undefined' ? 'Yes' : 'NO');
+        console.log('✅ initApp function:', typeof window.initApp !== 'undefined' ? 'Yes' : 'NO');
+      });
+    </script>
   </body>
 </html>
