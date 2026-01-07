@@ -192,5 +192,7 @@ Make sure you're accessing the files through a web server, not directly via `fil
 
 ## Support
 
-For issues or questions, check the browser console for error messages and ensure all files are properly loaded.
+For issues or questions:
+- **Email**: hello.vixyra@gmail.com
+- Check the browser console for error messages and ensure all files are properly loaded.
 

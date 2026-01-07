@@ -146,4 +146,6 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## 📧 Support
 
-For issues or questions, check the browser console for error messages.
+For issues or questions:
+- **Email**: hello.vixyra@gmail.com
+- Check the browser console for error messages
