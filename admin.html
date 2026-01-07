@@ -315,7 +315,7 @@
     function calculateStorage() {
       let total = 0;
       for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key) && key.startsWith('canvasEditor_')) {
+        if (localStorage.hasOwnProperty(key) && key.startsWith('vixyra_')) {
           total += localStorage[key].length + key.length;
         }
       }
@@ -324,15 +324,15 @@
 
     function updateStats() {
       // Total projects (from localStorage)
-      const lastProject = localStorage.getItem('canvasEditor_lastProject');
+      const lastProject = localStorage.getItem('vixyra_lastProject');
       document.getElementById('totalProjects').textContent = lastProject ? '1' : '0';
 
       // Total versions
-      const versions = JSON.parse(localStorage.getItem('canvasEditor_versionHistory') || '[]');
+      const versions = JSON.parse(localStorage.getItem('vixyra_versionHistory') || '[]');
       document.getElementById('totalVersions').textContent = versions.length;
 
       // User templates
-      const templates = JSON.parse(localStorage.getItem('canvasEditor_userTemplates') || '[]');
+      const templates = JSON.parse(localStorage.getItem('vixyra_userTemplates') || '[]');
       document.getElementById('totalTemplates').textContent = templates.length;
 
       // Storage used
@@ -342,7 +342,7 @@
       // Storage details
       const details = [];
       for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key) && key.startsWith('canvasEditor_')) {
+        if (localStorage.hasOwnProperty(key) && key.startsWith('vixyra_')) {
           const size = (localStorage[key].length + key.length) * 2;
           details.push(`${key}: ${formatBytes(size)}`);
         }
@@ -354,7 +354,7 @@
 
     function loadVersionHistory() {
       const container = document.getElementById('versionHistoryAdmin');
-      const versions = JSON.parse(localStorage.getItem('canvasEditor_versionHistory') || '[]');
+      const versions = JSON.parse(localStorage.getItem('vixyra_versionHistory') || '[]');
       
       if (versions.length === 0) {
         container.innerHTML = '<p style="color: #b3b3b3;">No version history found.</p>';
@@ -383,7 +383,7 @@
 
     function loadTemplates() {
       const container = document.getElementById('templatesAdmin');
-      const templates = JSON.parse(localStorage.getItem('canvasEditor_userTemplates') || '[]');
+      const templates = JSON.parse(localStorage.getItem('vixyra_userTemplates') || '[]');
       
       if (templates.length === 0) {
         container.innerHTML = '<p style="color: #b3b3b3;">No user templates found.</p>';
@@ -412,7 +412,7 @@
 
     function loadCloudProjects() {
       const container = document.getElementById('cloudProjectsAdmin');
-      const projects = JSON.parse(localStorage.getItem('canvasEditor_cloudProjects') || '[]');
+      const projects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
       
       if (projects.length === 0) {
         container.innerHTML = '<p style="color: #b3b3b3;">No cloud projects found.</p>';
@@ -439,7 +439,7 @@
 
     function clearAllData() {
       if (confirm('Are you sure you want to clear ALL data? This cannot be undone!')) {
-        const keys = Object.keys(localStorage).filter(k => k.startsWith('canvasEditor_'));
+        const keys = Object.keys(localStorage).filter(k => k.startsWith('vixyra_'));
         keys.forEach(key => localStorage.removeItem(key));
         showAlert('All data cleared successfully', 'success');
         updateStats();
@@ -451,7 +451,7 @@
 
     function clearVersionHistory() {
       if (confirm('Clear all version history?')) {
-        localStorage.removeItem('canvasEditor_versionHistory');
+        localStorage.removeItem('vixyra_versionHistory');
         showAlert('Version history cleared', 'success');
         updateStats();
         loadVersionHistory();
@@ -460,7 +460,7 @@
 
     function clearTemplates() {
       if (confirm('Clear all user templates?')) {
-        localStorage.removeItem('canvasEditor_userTemplates');
+        localStorage.removeItem('vixyra_userTemplates');
         showAlert('Templates cleared', 'success');
         updateStats();
         loadTemplates();
@@ -469,7 +469,7 @@
 
     function clearCloudProjects() {
       if (confirm('Clear all cloud projects?')) {
-        localStorage.removeItem('canvasEditor_cloudProjects');
+        localStorage.removeItem('vixyra_cloudProjects');
         showAlert('Cloud projects cleared', 'success');
         updateStats();
         loadCloudProjects();
@@ -478,7 +478,7 @@
 
     function deleteVersion(id) {
       if (confirm('Delete this version?')) {
-        const versions = JSON.parse(localStorage.getItem('canvasEditor_versionHistory') || '[]');
+        const versions = JSON.parse(localStorage.getItem('vixyra_versionHistory') || '[]');
         const filtered = versions.filter(v => v.id !== id);
         localStorage.setItem('canvasEditor_versionHistory', JSON.stringify(filtered));
         showAlert('Version deleted', 'success');
@@ -489,7 +489,7 @@
 
     function deleteTemplate(id) {
       if (confirm('Delete this template?')) {
-        const templates = JSON.parse(localStorage.getItem('canvasEditor_userTemplates') || '[]');
+        const templates = JSON.parse(localStorage.getItem('vixyra_userTemplates') || '[]');
         const filtered = templates.filter(t => t.id !== id);
         localStorage.setItem('canvasEditor_userTemplates', JSON.stringify(filtered));
         showAlert('Template deleted', 'success');
@@ -500,7 +500,7 @@
 
     function deleteCloudProject(index) {
       if (confirm('Delete this cloud project?')) {
-        const projects = JSON.parse(localStorage.getItem('canvasEditor_cloudProjects') || '[]');
+        const projects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
         projects.splice(index, 1);
         localStorage.setItem('canvasEditor_cloudProjects', JSON.stringify(projects));
         showAlert('Cloud project deleted', 'success');

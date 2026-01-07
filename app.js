@@ -39,7 +39,7 @@ function loadFabricJS() {
     
 
 
-// Canvas Editor - Advanced Features
+// Vixyra - Create. Click. Wow. - Advanced Features
 
 // ==================== ERROR HANDLING UTILITIES ====================
 const ErrorHandler = {
@@ -173,7 +173,7 @@ function saveVersion() {
     
     // Save to localStorage
     try {
-      localStorage.setItem('canvasEditor_versionHistory', JSON.stringify(versionHistory));
+      localStorage.setItem('vixyra_versionHistory', JSON.stringify(versionHistory));
       lastSaveTime = new Date();
       updateAutoSaveIndicator();
     } catch (e) {
@@ -186,7 +186,7 @@ function saveVersion() {
 
 function loadVersionHistory() {
   try {
-    const stored = localStorage.getItem('canvasEditor_versionHistory');
+    const stored = localStorage.getItem('vixyra_versionHistory');
     if (stored) {
       versionHistory = JSON.parse(stored);
     }
@@ -430,7 +430,7 @@ const templateLibrary = [
 // User-created templates (stored in localStorage)
 let userTemplates = [];
 function loadUserTemplates() {
-  const stored = localStorage.getItem('canvasEditor_userTemplates');
+  const stored = localStorage.getItem('vixyra_userTemplates');
   if (stored) {
     try {
       userTemplates = JSON.parse(stored);
@@ -440,7 +440,7 @@ function loadUserTemplates() {
   }
 }
 function saveUserTemplates() {
-  localStorage.setItem('canvasEditor_userTemplates', JSON.stringify(userTemplates));
+  localStorage.setItem('vixyra_userTemplates', JSON.stringify(userTemplates));
 }
 loadUserTemplates();
 
@@ -653,7 +653,7 @@ window.initApp = function initApp() {
       saveVersion();
       
       console.log('✅ Canvas initialized successfully');
-      ErrorHandler.showSuccess('Canvas editor ready!');
+      ErrorHandler.showSuccess('Vixyra ready! Create. Click. Wow.');
     } catch (error) {
       ErrorHandler.showError('Error setting up event listeners', error);
       // Try again with delegation only
@@ -1746,15 +1746,15 @@ function saveToCloud() {
   };
   
   // Store in localStorage as "cloud" storage
-  const cloudProjects = JSON.parse(localStorage.getItem('canvasEditor_cloudProjects') || '[]');
+  const cloudProjects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
   cloudProjects.push(projectData);
-  localStorage.setItem('canvasEditor_cloudProjects', JSON.stringify(cloudProjects));
+  localStorage.setItem('vixyra_cloudProjects', JSON.stringify(cloudProjects));
   
   alert('Project saved to cloud!');
 }
 
 function loadFromCloud() {
-  const cloudProjects = JSON.parse(localStorage.getItem('canvasEditor_cloudProjects') || '[]');
+  const cloudProjects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
   if (cloudProjects.length === 0) {
     alert('No projects in cloud storage.');
     return;
@@ -2098,7 +2098,7 @@ function saveProject() {
   URL.revokeObjectURL(url);
   
   // Also save to localStorage
-  localStorage.setItem('canvasEditor_lastProject', dataStr);
+  localStorage.setItem('vixyra_lastProject', dataStr);
   document.getElementById('fileModal').classList.remove('active');
 }
 
@@ -2142,7 +2142,7 @@ function loadProject() {
 
 // Try to load last project from localStorage
 function loadLastProject() {
-  const lastProject = localStorage.getItem('canvasEditor_lastProject');
+  const lastProject = localStorage.getItem('vixyra_lastProject');
   if (lastProject) {
     try {
       const projectData = JSON.parse(lastProject);

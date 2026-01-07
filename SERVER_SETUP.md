@@ -1,6 +1,8 @@
-# Canvas Editor - Server Setup Guide
+# Vixyra - Server Setup Guide
 
-This guide will help you set up a local development server for the Canvas Editor application.
+**Create. Click. Wow.**
+
+This guide will help you set up a local development server for Vixyra.
 
 ## Quick Start
 
@@ -9,7 +11,7 @@ This guide will help you set up a local development server for the Canvas Editor
 **Python 3:**
 ```bash
 # Navigate to the project directory
-cd react-canvas-editor-master
+cd vixyra
 
 # Start the server
 python -m http.server 8000
@@ -33,7 +35,7 @@ If you have Node.js installed:
 npm install -g http-server
 
 # Navigate to the project directory
-cd react-canvas-editor-master
+cd vixyra
 
 # Start the server
 http-server -p 8000
@@ -49,7 +51,7 @@ If you have PHP installed:
 
 ```bash
 # Navigate to the project directory
-cd react-canvas-editor-master
+cd vixyra
 
 # Start the server
 php -S localhost:8000
@@ -71,7 +73,7 @@ Then open your browser and go to: `http://localhost:8000`
 
 ### Static Hosting Services
 
-The Canvas Editor is a static web application and can be deployed to any static hosting service:
+Vixyra is a static web application and can be deployed to any static hosting service:
 
 #### Netlify
 1. Create a new site
@@ -110,7 +112,7 @@ firebase deploy
 ## File Structure
 
 ```
-react-canvas-editor-master/
+vixyra/
 ├── index.html          # Main application file
 ├── styles.css          # All CSS styles
 ├── app.js              # All JavaScript functionality

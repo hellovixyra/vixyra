@@ -20,7 +20,7 @@ After creating the repository, GitHub will show you commands. Use these commands
 
 ```bash
 # Navigate to your project directory
-cd react-canvas-editor-master
+cd vixyra
 
 # Add the remote repository (replace YOUR_USERNAME with your GitHub username)
 git remote add origin https://github.com/YOUR_USERNAME/vixyra.git
@@ -42,7 +42,7 @@ git push -u origin main
    - **Folder**: `/ (root)`
 5. Click **"Save"**
 6. Wait 1-2 minutes for GitHub to build your site
-7. Your site will be live at: `https://YOUR_USERNAME.github.io/canvas-editor/`
+7. Your site will be live at: `https://YOUR_USERNAME.github.io/vixyra/`
 
 ## Step 4: Update README with Live URL
 
@@ -116,7 +116,7 @@ git pull
 ### If you get "remote origin already exists"
 ```bash
 git remote remove origin
-git remote add origin https://github.com/YOUR_USERNAME/canvas-editor.git
+git remote add origin https://github.com/YOUR_USERNAME/vixyra.git
 ```
 
 ### If you get authentication errors
