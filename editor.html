@@ -519,15 +519,18 @@
     <script src="app.js"></script>
     <script src="auth.js"></script>
     <script>
-      // Update navigation based on auth status
+      // Check authentication - redirect to login if not authenticated
       if (typeof AuthService !== 'undefined') {
-        if (AuthService.isAuthenticated()) {
+        if (!AuthService.isAuthenticated()) {
+          window.location.href = 'login.html?redirect=editor.html';
+        } else {
+          // Update navigation based on auth status
           document.getElementById('editorAuthLinks').style.display = 'inline-block';
           document.getElementById('editorLoginLinks').style.display = 'none';
-        } else {
-          document.getElementById('editorAuthLinks').style.display = 'none';
-          document.getElementById('editorLoginLinks').style.display = 'inline-block';
         }
+      } else {
+        // If auth.js didn't load, redirect to login
+        window.location.href = 'login.html?redirect=editor.html';
       }
       
       // Diagnostic: Check if everything loaded

@@ -352,7 +352,6 @@
         </a>
         <div class="nav-links">
           <a href="#features">Features</a>
-          <a href="editor.html">Editor</a>
           <span id="authLinks">
             <a href="login.html">Login</a>
             <a href="signup.html" class="cta-button">Sign Up</a>
@@ -373,7 +372,7 @@
       <p class="tagline">Vixyra</p>
       <p>A powerful, Canva-like canvas editor built with vanilla JavaScript and Fabric.js. Create stunning designs with text, shapes, images, templates, and more!</p>
       <div class="hero-buttons">
-        <a href="editor.html" class="btn-primary">Start Creating</a>
+        <a href="#" id="startCreatingBtn" class="btn-primary">Start Creating</a>
         <a href="#features" class="btn-secondary">Learn More</a>
       </div>
     </div>
@@ -478,7 +477,14 @@
           </a>
         </div>
         <div class="footer-links">
-          <a href="editor.html">Editor</a>
+          <span id="footerAuthLinks">
+            <a href="login.html">Login</a>
+            <a href="signup.html">Sign Up</a>
+          </span>
+          <span id="footerUserLinks" style="display: none;">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="editor.html">Editor</a>
+          </span>
           <a href="mailto:hello.vixyra@gmail.com">Contact</a>
         </div>
         <div class="footer-contact">
@@ -494,13 +500,32 @@
   <script src="auth.js"></script>
   <script>
     // Update navigation based on auth status
-    if (AuthService.isAuthenticated()) {
-      document.getElementById('authLinks').style.display = 'none';
-      document.getElementById('userLinks').style.display = 'flex';
-    } else {
-      document.getElementById('authLinks').style.display = 'flex';
-      document.getElementById('userLinks').style.display = 'none';
+    function updateNavigation() {
+      const isAuthenticated = AuthService.isAuthenticated();
+      const authLinks = document.getElementById('authLinks');
+      const userLinks = document.getElementById('userLinks');
+      const footerAuthLinks = document.getElementById('footerAuthLinks');
+      const footerUserLinks = document.getElementById('footerUserLinks');
+      const startCreatingBtn = document.getElementById('startCreatingBtn');
+      
+      if (isAuthenticated) {
+        authLinks.style.display = 'none';
+        userLinks.style.display = 'flex';
+        footerAuthLinks.style.display = 'none';
+        footerUserLinks.style.display = 'inline';
+        startCreatingBtn.href = 'editor.html';
+        startCreatingBtn.textContent = 'Start Creating';
+      } else {
+        authLinks.style.display = 'flex';
+        userLinks.style.display = 'none';
+        footerAuthLinks.style.display = 'inline';
+        footerUserLinks.style.display = 'none';
+        startCreatingBtn.href = 'signup.html';
+        startCreatingBtn.textContent = 'Sign Up to Start';
+      }
     }
+    
+    updateNavigation();
   </script>
 </body>
 </html>
