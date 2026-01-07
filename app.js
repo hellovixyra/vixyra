@@ -40,6 +40,7 @@ function loadFabricJS() {
 
 
 // Vixyra - Create. Click. Wow. - Advanced Features
+// Contact: hello.vixyra@gmail.com
 
 // ==================== ERROR HANDLING UTILITIES ====================
 const ErrorHandler = {
