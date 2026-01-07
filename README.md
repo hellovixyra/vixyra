@@ -1,4 +1,4 @@
-# Vixyra
+# <img src="logo.svg" alt="Vixyra Logo" height="40" />
 
 **Create. Click. Wow.**
 

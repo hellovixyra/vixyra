@@ -1807,7 +1807,7 @@ function printDesign() {
   const printWindow = window.open('', '_blank');
   if (!printWindow) return;
   
-  const htmlContent = '<html><head><title>Print Design</title><style>body { margin: 0; padding: 20px; } img { max-width: 100%; height: auto; }</style></head><body>' + preview.innerHTML + '</body></html>';
+  const htmlContent = '<html><head><title>Vixyra - Print Design</title><link rel="icon" href="logo.svg" type="image/svg+xml" /><style>body { margin: 0; padding: 20px; } img { max-width: 100%; height: auto; }</style></head><body>' + preview.innerHTML + '</body></html>';
   printWindow.document.write(htmlContent);
   printWindow.document.close();
   printWindow.print();
