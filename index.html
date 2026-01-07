@@ -353,7 +353,14 @@
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="editor.html">Editor</a>
-          <a href="editor.html" class="cta-button">Launch Editor</a>
+          <span id="authLinks">
+            <a href="login.html">Login</a>
+            <a href="signup.html" class="cta-button">Sign Up</a>
+          </span>
+          <span id="userLinks" style="display: none;">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="editor.html" class="cta-button">Launch Editor</a>
+          </span>
         </div>
       </nav>
     </div>
@@ -483,5 +490,17 @@
       </p>
     </div>
   </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Update navigation based on auth status
+    if (AuthService.isAuthenticated()) {
+      document.getElementById('authLinks').style.display = 'none';
+      document.getElementById('userLinks').style.display = 'flex';
+    } else {
+      document.getElementById('authLinks').style.display = 'flex';
+      document.getElementById('userLinks').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

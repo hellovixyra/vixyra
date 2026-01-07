@@ -33,6 +33,12 @@
           <span id="autoSaveIndicator" style="font-size: 11px; color: #4caf50; margin-left: 12px; opacity: 0.8;"></span>
         </div>
         <div class="top-bar-right">
+          <span id="editorAuthLinks" style="display: none; margin-right: 8px;">
+            <a href="dashboard.html" style="color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-right: 4px;">Dashboard</a>
+          </span>
+          <span id="editorLoginLinks" style="display: none; margin-right: 8px;">
+            <a href="login.html" style="color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-right: 4px;">Login</a>
+          </span>
           <button id="presentBtn">Present</button>
           <button id="shareBtn">Share</button>
           <button id="exportBtn">Export</button>
@@ -511,7 +517,19 @@
 
     <!-- Load Application JavaScript -->
     <script src="app.js"></script>
+    <script src="auth.js"></script>
     <script>
+      // Update navigation based on auth status
+      if (typeof AuthService !== 'undefined') {
+        if (AuthService.isAuthenticated()) {
+          document.getElementById('editorAuthLinks').style.display = 'inline-block';
+          document.getElementById('editorLoginLinks').style.display = 'none';
+        } else {
+          document.getElementById('editorAuthLinks').style.display = 'none';
+          document.getElementById('editorLoginLinks').style.display = 'inline-block';
+        }
+      }
+      
       // Diagnostic: Check if everything loaded
       window.addEventListener('load', function() {
         console.log('✅ Page loaded');

@@ -1738,26 +1738,48 @@ function copyShareableLink() {
 
 function saveToCloud() {
   if (!canvas) return;
-  // Simulate cloud storage (in production, use actual cloud storage API)
+  
   const projectData = {
     canvas: canvas.toJSON(),
     backgroundColor: backgroundColor,
     dimensions: { width: canvas.width, height: canvas.height },
+    pages: pages,
+    currentPage: currentPage,
     timestamp: new Date().toISOString()
   };
   
-  // Store in localStorage as "cloud" storage
-  const cloudProjects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
-  cloudProjects.push(projectData);
-  localStorage.setItem('vixyra_cloudProjects', JSON.stringify(cloudProjects));
-  
-  alert('Project saved to cloud!');
+  // If user is logged in, save to their profile
+  if (typeof AuthService !== 'undefined' && AuthService.isAuthenticated()) {
+    const projectName = prompt('Enter project name:', 'Untitled Project');
+    if (projectName) {
+      projectData.name = projectName;
+      const result = AuthService.saveUserProject(projectData);
+      if (result.success) {
+        ErrorHandler.showSuccess('Project saved to your account!');
+      } else {
+        ErrorHandler.showError(result.message || 'Failed to save project');
+      }
+    }
+  } else {
+    // Fallback to localStorage for non-logged-in users
+    const cloudProjects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
+    cloudProjects.push(projectData);
+    localStorage.setItem('vixyra_cloudProjects', JSON.stringify(cloudProjects));
+    ErrorHandler.showSuccess('Project saved! Sign up to save to your account.');
+  }
 }
 
 function loadFromCloud() {
+  // If user is logged in, redirect to dashboard to load projects
+  if (typeof AuthService !== 'undefined' && AuthService.isAuthenticated()) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  
+  // Fallback for non-logged-in users
   const cloudProjects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
   if (cloudProjects.length === 0) {
-    alert('No projects in cloud storage.');
+    alert('No projects in cloud storage. Sign up to save projects to your account!');
     return;
   }
   
@@ -2089,6 +2111,26 @@ function saveProject() {
     timestamp: new Date().toISOString()
   };
   
+  // If user is logged in, offer to save to account
+  if (typeof AuthService !== 'undefined' && AuthService.isAuthenticated()) {
+    const saveToAccount = confirm('Save to your account? (Yes) or Download as file? (No)');
+    if (saveToAccount) {
+      const projectName = prompt('Enter project name:', 'Untitled Project');
+      if (projectName) {
+        projectData.name = projectName;
+        const result = AuthService.saveUserProject(projectData);
+        if (result.success) {
+          ErrorHandler.showSuccess('Project saved to your account!');
+          document.getElementById('fileModal').classList.remove('active');
+          return;
+        } else {
+          ErrorHandler.showError(result.message || 'Failed to save project');
+        }
+      }
+    }
+  }
+  
+  // Download as file
   const dataStr = JSON.stringify(projectData, null, 2);
   const dataBlob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(dataBlob);
@@ -2141,8 +2183,42 @@ function loadProject() {
   document.getElementById('fileModal').classList.remove('active');
 }
 
-// Try to load last project from localStorage
+// Try to load last project from localStorage or user account
 function loadLastProject() {
+  // Check if there's a project to load from dashboard
+  const loadProjectData = localStorage.getItem('vixyra_loadProject');
+  if (loadProjectData) {
+    try {
+      const projectData = JSON.parse(loadProjectData);
+      if (projectData.canvas && canvas) {
+        canvas.loadFromJSON(projectData.canvas, function() {
+          canvas.renderAll();
+          if (projectData.dimensions) {
+            canvas.setWidth(projectData.dimensions.width);
+            canvas.setHeight(projectData.dimensions.height);
+          }
+          if (projectData.backgroundColor) {
+            backgroundColor = projectData.backgroundColor;
+            canvas.backgroundColor = backgroundColor;
+          }
+          if (projectData.pages) {
+            pages = projectData.pages;
+            currentPage = projectData.currentPage || 0;
+            updatePageDisplay();
+          }
+          updateLayersList();
+          canvas.renderAll();
+          ErrorHandler.showSuccess('Project loaded successfully!');
+        });
+        localStorage.removeItem('vixyra_loadProject');
+        return;
+      }
+    } catch (error) {
+      console.error('Error loading project from dashboard:', error);
+    }
+  }
+  
+  // Fallback to last project from localStorage
   const lastProject = localStorage.getItem('vixyra_lastProject');
   if (lastProject) {
     try {

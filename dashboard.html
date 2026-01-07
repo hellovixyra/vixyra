@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - Vixyra</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: white;
+      color: #667eea;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .welcome-section h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .welcome-section p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-card-title {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card-value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    /* Projects Section */
+    .projects-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .section-header h2 {
+      font-size: 24px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .project-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .project-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .project-card-date {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .project-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0.8;
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    /* Profile Section */
+    .profile-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .profile-info h3 {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .profile-info p {
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .detail-item {
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <a href="index.html" class="logo">
+        <img src="logo.svg" alt="Vixyra Logo" />
+        <span>Vixyra</span>
+      </a>
+      <div class="header-actions">
+        <a href="editor.html" class="btn btn-primary">Create New Project</a>
+        <button class="btn btn-secondary" onclick="AuthService.logout(); window.location.href='index.html';">Logout</button>
+      </div>
+    </header>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section" id="welcomeSection">
+      <h1>Welcome back!</h1>
+      <p>Ready to create something amazing?</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-title">Total Projects</div>
+        <div class="stat-card-value" id="totalProjects">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-title">Account Created</div>
+        <div class="stat-card-value" id="accountDate">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-title">Last Login</div>
+        <div class="stat-card-value" id="lastLogin">-</div>
+      </div>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="projects-section">
+      <div class="section-header">
+        <h2>My Projects</h2>
+        <a href="editor.html" class="btn btn-primary">+ New Project</a>
+      </div>
+      <div class="projects-grid" id="projectsGrid">
+        <div class="empty-state">
+          <div class="empty-state-icon">📁</div>
+          <p>No projects yet. Create your first project!</p>
+          <a href="editor.html" class="btn btn-primary" style="margin-top: 16px; display: inline-block;">Start Creating</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">U</div>
+        <div class="profile-info">
+          <h3 id="userName">User</h3>
+          <p id="userEmail">user@example.com</p>
+        </div>
+      </div>
+      <div class="profile-details">
+        <div class="detail-item">
+          <div class="detail-label">Email</div>
+          <div class="detail-value" id="detailEmail">-</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Member Since</div>
+          <div class="detail-value" id="detailCreated">-</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Total Projects</div>
+          <div class="detail-value" id="detailProjects">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Check authentication
+    if (!AuthService.isAuthenticated()) {
+      window.location.href = 'login.html?redirect=dashboard.html';
+    }
+
+    // Load user data
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      // Update welcome section
+      document.getElementById('welcomeSection').querySelector('h1').textContent = `Welcome back, ${user.name}!`;
+      
+      // Update profile
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userEmail').textContent = user.email;
+      document.getElementById('detailEmail').textContent = user.email;
+      
+      // Avatar
+      const avatar = document.getElementById('profileAvatar');
+      avatar.textContent = user.name.charAt(0).toUpperCase();
+      
+      // Dates
+      if (user.createdAt) {
+        const createdDate = new Date(user.createdAt);
+        document.getElementById('accountDate').textContent = createdDate.toLocaleDateString();
+        document.getElementById('detailCreated').textContent = createdDate.toLocaleDateString();
+      }
+      
+      if (user.lastLogin) {
+        const loginDate = new Date(user.lastLogin);
+        document.getElementById('lastLogin').textContent = loginDate.toLocaleDateString();
+      }
+    }
+
+    // Load projects
+    function loadProjects() {
+      const projects = AuthService.getUserProjects();
+      const projectsGrid = document.getElementById('projectsGrid');
+      
+      document.getElementById('totalProjects').textContent = projects.length;
+      document.getElementById('detailProjects').textContent = projects.length;
+      
+      if (projects.length === 0) {
+        projectsGrid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-state-icon">📁</div>
+            <p>No projects yet. Create your first project!</p>
+            <a href="editor.html" class="btn btn-primary" style="margin-top: 16px; display: inline-block;">Start Creating</a>
+          </div>
+        `;
+        return;
+      }
+      
+      projectsGrid.innerHTML = projects.map(project => {
+        const date = new Date(project.createdAt);
+        return `
+          <div class="project-card" onclick="loadProject('${project.id}')">
+            <div class="project-card-header">
+              <div>
+                <div class="project-card-title">${project.name}</div>
+                <div class="project-card-date">${date.toLocaleDateString()}</div>
+              </div>
+            </div>
+            <div class="project-card-actions">
+              <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); loadProject('${project.id}')">Open</button>
+              <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); deleteProject('${project.id}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadProject(projectId) {
+      const projects = AuthService.getUserProjects();
+      const project = projects.find(p => p.id === projectId);
+      if (project) {
+        // Store project data to load in editor
+        localStorage.setItem('vixyra_loadProject', JSON.stringify(project.data));
+        window.location.href = 'editor.html';
+      }
+    }
+
+    function deleteProject(projectId) {
+      if (confirm('Are you sure you want to delete this project?')) {
+        AuthService.deleteUserProject(projectId);
+        loadProjects();
+      }
+    }
+
+    // Initialize
+    loadProjects();
+  </script>
+</body>
+</html>
+
