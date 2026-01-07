@@ -64,6 +64,12 @@
       align-items: center;
     }
 
+    .nav-links > span {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
     .nav-links a {
       color: white;
       text-decoration: none;
@@ -84,11 +90,13 @@
       font-weight: 600;
       transition: transform 0.2s, box-shadow 0.2s;
       display: inline-block;
+      white-space: nowrap;
     }
 
     .cta-button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      opacity: 1;
     }
 
     /* Hero Section */
@@ -330,6 +338,15 @@
         gap: 16px;
       }
 
+      .nav-links > span {
+        gap: 12px;
+      }
+
+      .cta-button {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
       .features-grid {
         grid-template-columns: 1fr;
       }
@@ -517,6 +534,8 @@
         startCreatingBtn.textContent = 'Start Creating';
       } else {
         authLinks.style.display = 'flex';
+        authLinks.style.gap = '16px';
+        authLinks.style.alignItems = 'center';
         userLinks.style.display = 'none';
         footerAuthLinks.style.display = 'inline';
         footerUserLinks.style.display = 'none';
