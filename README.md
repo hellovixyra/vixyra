@@ -1,10 +1,12 @@
-# Canvas Editor - Advanced Design Tool
+# Vixyra
+
+**Create. Click. Wow.**
 
 A powerful, Canva-like canvas editor built with vanilla JavaScript and Fabric.js. Create stunning designs with text, shapes, images, templates, and more!
 
 ## 🚀 Live Demo
 
-[View Live on GitHub Pages](https://yourusername.github.io/react-canvas-editor-master/)
+[View Live on GitHub Pages](https://yourusername.github.io/vixyra/)
 
 ## ✨ Features
 
@@ -49,7 +51,7 @@ A powerful, Canva-like canvas editor built with vanilla JavaScript and Fabric.js
 ## 📁 File Structure
 
 ```
-react-canvas-editor-master/
+vixyra/
 ├── index.html          # Main application
 ├── styles.css          # All CSS styles
 ├── app.js              # All JavaScript functionality
@@ -65,12 +67,12 @@ react-canvas-editor-master/
 1. Fork or clone this repository
 2. Go to Settings > Pages
 3. Select main branch
-4. Your site will be live at: `https://yourusername.github.io/react-canvas-editor-master/`
+4. Your site will be live at: `https://yourusername.github.io/vixyra/`
 
 ### Option 2: Local Development
 ```bash
 # Navigate to project directory
-cd react-canvas-editor-master
+cd vixyra
 
 # Start a local server (Python 3)
 python -m http.server 8000
