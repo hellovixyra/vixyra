@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Vixyra - Create. Click. Wow. Advanced canvas editor for stunning designs" />
+    <meta name="author" content="Vixyra" />
+    <meta name="contact" content="hello.vixyra@gmail.com" />
+    <title>Vixyra - Create. Click. Wow.</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="logo.svg" />
+  </head>
+  <body>
+    <div class="App">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <button id="menuBtn">☰</button>
+          <button id="fileBtn">File</button>
+          <button id="resizeBtn">Resize</button>
+          <button id="undoBtn">↶</button>
+          <button id="redoBtn">↷</button>
+          <div class="top-bar-title" id="projectTitle" style="display: flex; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="logo.svg" alt="Vixyra Logo" style="height: 32px; width: auto;" />
+              <div>
+                <div style="opacity: 0.9; font-size: 10px; font-style: italic; line-height: 1; margin-top: 2px;">Create. Click. Wow.</div>
+              </div>
+            </div>
+          </div>
+          <span id="autoSaveIndicator" style="font-size: 11px; color: #4caf50; margin-left: 12px; opacity: 0.8;"></span>
+        </div>
+        <div class="top-bar-right">
+          <button id="presentBtn">Present</button>
+          <button id="shareBtn">Share</button>
+          <button id="exportBtn">Export</button>
+          <button id="printBtn">Print</button>
+        </div>
+      </div>
+
+      <!-- Main Container -->
+      <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+          <div class="sidebar-item active" data-panel="text">
+            <div class="sidebar-item-icon">T</div>
+            <div class="sidebar-item-label">Text</div>
+          </div>
+          <div class="sidebar-item" data-panel="shapes">
+            <div class="sidebar-item-icon">□</div>
+            <div class="sidebar-item-label">Shapes</div>
+          </div>
+          <div class="sidebar-item" data-panel="elements">
+            <div class="sidebar-item-icon">◇</div>
+            <div class="sidebar-item-label">Elements</div>
+          </div>
+          <div class="sidebar-item" data-panel="uploads">
+            <div class="sidebar-item-icon">☁</div>
+            <div class="sidebar-item-label">Uploads</div>
+          </div>
+          <div class="sidebar-item" data-panel="background">
+            <div class="sidebar-item-icon">🎨</div>
+            <div class="sidebar-item-label">Background</div>
+          </div>
+          <div class="sidebar-item" data-panel="layers">
+            <div class="sidebar-item-icon">📚</div>
+            <div class="sidebar-item-label">Layers</div>
+          </div>
+          <div class="sidebar-item" data-panel="templates">
+            <div class="sidebar-item-icon">📋</div>
+            <div class="sidebar-item-label">Templates</div>
+          </div>
+          <div class="sidebar-item" data-panel="tools">
+            <div class="sidebar-item-icon">⚙</div>
+            <div class="sidebar-item-label">Tools</div>
+          </div>
+        </div>
+
+        <!-- Panel Area -->
+        <div class="panel-area active" id="textPanel">
+          <div class="panel-header">Text</div>
+          <div class="panel-content">
+            <button class="panel-button" id="addTextBtn">Add a text box</button>
+            <div class="panel-section">
+              <div class="panel-section-title">Text Style</div>
+              <div class="control-group">
+                <label class="control-label">Text Color</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="textColor" value="#000000" />
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Background Color</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="textBgColor" value="#ffffff" />
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Font Family</label>
+                <select id="fontFamily" class="select-control">
+                  <optgroup label="System Fonts">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                    <option value="Impact">Impact</option>
+                    <option value="Trebuchet MS">Trebuchet MS</option>
+                    <option value="Palatino">Palatino</option>
+                  </optgroup>
+                  <optgroup label="Google Fonts">
+                    <option value="Roboto">Roboto</option>
+                    <option value="Open Sans">Open Sans</option>
+                    <option value="Lato">Lato</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Oswald">Oswald</option>
+                    <option value="Raleway">Raleway</option>
+                    <option value="Poppins">Poppins</option>
+                    <option value="Playfair Display">Playfair Display</option>
+                    <option value="Merriweather">Merriweather</option>
+                    <option value="Ubuntu">Ubuntu</option>
+                    <option value="Dancing Script">Dancing Script</option>
+                    <option value="Pacifico">Pacifico</option>
+                    <option value="Bebas Neue">Bebas Neue</option>
+                    <option value="Crimson Text">Crimson Text</option>
+                    <option value="Lora">Lora</option>
+                    <option value="Source Sans Pro">Source Sans Pro</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Font Size</label>
+                <div class="slider-group">
+                  <input type="range" id="fontSize" min="1" max="120" step="1" value="24" />
+                  <span class="slider-value" id="fontSizeValue">24</span>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Text Formatting</label>
+                <div class="checkbox-group">
+                  <label class="checkbox-item">
+                    <input type="checkbox" id="boldCheck" />
+                    <span>Bold</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" id="italicCheck" />
+                    <span>Italic</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" id="underlineCheck" />
+                    <span>Underline</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" id="linethroughCheck" />
+                    <span>Strikethrough</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="shapesPanel">
+          <div class="panel-header">Shapes</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <div class="panel-section-title">Basic Shapes</div>
+              <div class="shapes-grid">
+                <div class="shape-button" data-shape="rect">▭</div>
+                <div class="shape-button" data-shape="circle">○</div>
+                <div class="shape-button" data-shape="line">─</div>
+                <div class="shape-button" data-shape="arrow">→</div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Shape Color</label>
+                <div class="color-input-wrapper">
+                  <input type="color" id="shapeColor" value="#667eea" />
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Stroke Width</label>
+                <div class="slider-group">
+                  <input type="range" id="strokeWidth" min="1" max="20" step="1" value="2" />
+                  <span class="slider-value" id="strokeWidthValue">2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="elementsPanel">
+          <div class="panel-header">Elements</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <button class="panel-button secondary" id="duplicateBtn">Duplicate Selected</button>
+              <button class="panel-button secondary" id="flipHorizontalBtn">Flip Horizontal</button>
+              <button class="panel-button secondary" id="flipVerticalBtn">Flip Vertical</button>
+              <button class="panel-button secondary" id="cropBtn">Crop Image</button>
+            </div>
+            <div class="panel-section">
+              <div class="panel-section-title">Image Filters</div>
+              <div class="control-group">
+                <label class="control-label">Blur</label>
+                <div class="slider-group">
+                  <input type="range" id="filterBlur" min="0" max="20" step="0.5" value="0" />
+                  <span class="slider-value" id="filterBlurValue">0</span>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Brightness</label>
+                <div class="slider-group">
+                  <input type="range" id="filterBrightness" min="0" max="200" step="1" value="100" />
+                  <span class="slider-value" id="filterBrightnessValue">100%</span>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Contrast</label>
+                <div class="slider-group">
+                  <input type="range" id="filterContrast" min="0" max="200" step="1" value="100" />
+                  <span class="slider-value" id="filterContrastValue">100%</span>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Saturation</label>
+                <div class="slider-group">
+                  <input type="range" id="filterSaturation" min="0" max="200" step="1" value="100" />
+                  <span class="slider-value" id="filterSaturationValue">100%</span>
+                </div>
+              </div>
+              <button class="panel-button secondary" id="resetFiltersBtn">Reset Filters</button>
+              <button class="panel-button secondary" id="removeBgBtn2">Remove Background</button>
+            </div>
+            <div class="panel-section">
+              <div class="panel-section-title">Stock Images</div>
+              <div class="stock-images-grid" id="stockImagesGrid">
+                <!-- Stock images will be loaded here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="uploadsPanel">
+          <div class="panel-header">Uploads</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <div class="file-input-wrapper">
+                <input type="file" id="imageUpload" accept="image/*" />
+                <label class="file-input-label" for="imageUpload">Upload Image</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="backgroundPanel">
+          <div class="panel-header">Background</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <div class="control-group">
+                <label class="control-label">Canvas Background Color</label>
+                <div class="color-input-wrapper">
+                  <div id="colorPicker"></div>
+                </div>
+              </div>
+              <button class="panel-button" id="addBgImageBtn">Add Background Image</button>
+              <button class="panel-button secondary" id="removeBgBtn">Remove Background</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="layersPanel">
+          <div class="panel-header">Layers</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <div class="layers-list" id="layersList">
+                <!-- Layers will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="templatesPanel">
+          <div class="panel-header">Templates</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <div class="control-group">
+                <label class="control-label">Category</label>
+                <select id="templateCategory" class="select-control">
+                  <option value="all">All Categories</option>
+                  <option value="business">Business</option>
+                  <option value="social">Social Media</option>
+                  <option value="presentation">Presentation</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="custom">My Templates</option>
+                </select>
+              </div>
+              <button class="panel-button" id="saveAsTemplateBtn">Save as Template</button>
+              <div class="templates-grid" id="templatesGrid">
+                <!-- Templates will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-area" id="toolsPanel">
+          <div class="panel-header">Tools</div>
+          <div class="panel-content">
+            <div class="panel-section">
+              <div class="control-group">
+                <label class="control-label">Canvas Dimensions</label>
+                <input type="number" id="canvasWidth" class="input-control" placeholder="Width" value="800" />
+                <input type="number" id="canvasHeight" class="input-control" placeholder="Height" value="600" style="margin-top: 8px;" />
+                <button class="panel-button secondary" id="applyDimensionsBtn" style="margin-top: 8px;">Apply Dimensions</button>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Zoom</label>
+                <select id="zoomSelect" class="select-control">
+                  <option value="25">25%</option>
+                  <option value="50">50%</option>
+                  <option value="75">75%</option>
+                  <option value="100" selected>100%</option>
+                  <option value="125">125%</option>
+                  <option value="150">150%</option>
+                  <option value="200">200%</option>
+                  <option value="300">300%</option>
+                  <option value="400">400%</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Animation</label>
+                <div class="animation-controls">
+                  <div class="animation-preset" data-animation="fade">Fade In</div>
+                  <div class="animation-preset" data-animation="slide">Slide In</div>
+                  <div class="animation-preset" data-animation="bounce">Bounce</div>
+                  <div class="animation-preset" data-animation="none">Remove Animation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-area">
+          <canvas id="canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="bottom-bar">
+        <div class="zoom-control">
+          <button id="zoomOutBtn">−</button>
+          <select id="zoomSelectBottom">
+            <option value="25">25%</option>
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100" selected>100%</option>
+            <option value="125">125%</option>
+            <option value="150">150%</option>
+            <option value="200">200%</option>
+          </select>
+          <button id="zoomInBtn">+</button>
+        </div>
+        <div class="page-control">
+          <div class="page-nav">
+            <button id="prevPageBtn">‹</button>
+            <div class="page-preview" id="currentPageDisplay">1</div>
+            <button id="nextPageBtn">›</button>
+          </div>
+          <button id="addPageBtn" style="background: #3d3d3d; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-left: 8px;">+</button>
+          <span style="font-size: 12px; color: #b3b3b3; margin-left: 8px;" id="pageCount">Pages 1/1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Export Design</div>
+          <button class="modal-close" id="closeExportModal">×</button>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Export Type</label>
+          <select id="exportType" class="select-control">
+            <option value="single">Current Page</option>
+            <option value="all">All Pages (Batch)</option>
+            <option value="zip">All Pages as ZIP</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Format</label>
+          <select id="exportFormat" class="select-control">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="svg">SVG</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Quality</label>
+          <div class="slider-group">
+            <input type="range" id="exportQuality" min="0.1" max="1" step="0.1" value="1" />
+            <span class="slider-value" id="exportQualityValue">100%</span>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Custom Dimensions (optional)</label>
+          <input type="number" id="exportWidth" class="input-control" placeholder="Width (leave empty for current)" />
+          <input type="number" id="exportHeight" class="input-control" placeholder="Height (leave empty for current)" style="margin-top: 8px;" />
+        </div>
+        <div class="control-group">
+          <label class="checkbox-item">
+            <input type="checkbox" id="transparentBg" />
+            <span>Transparent Background (PNG only)</span>
+          </label>
+        </div>
+        <button class="panel-button" id="confirmExportBtn">Export</button>
+        <button class="panel-button secondary" id="exportToCloudBtn">Export to Cloud</button>
+      </div>
+    </div>
+
+    <!-- File Menu Modal -->
+    <div class="modal" id="fileModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">File</div>
+          <button class="modal-close" id="closeFileModal">×</button>
+        </div>
+        <button class="panel-button" id="saveProjectBtn">Save Project</button>
+        <button class="panel-button secondary" id="loadProjectBtn">Load Project</button>
+        <button class="panel-button secondary" id="versionHistoryBtn" style="margin-top: 8px;">Version History</button>
+        <input type="file" id="loadProjectInput" accept=".json" style="display: none;" />
+      </div>
+    </div>
+
+    <!-- Version History Modal -->
+    <div class="modal" id="versionHistoryModal">
+      <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+          <div class="modal-title">Version History</div>
+          <button class="modal-close" id="closeVersionHistoryModal">×</button>
+        </div>
+        <div class="control-group">
+          <p style="color: #b3b3b3; font-size: 14px; margin-bottom: 16px;">
+            Auto-save creates versions every 30 seconds. Click on a version to restore it.
+          </p>
+          <div id="versionHistoryList" style="max-height: 400px; overflow-y: auto;">
+            <!-- Versions will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Share Design</div>
+          <button class="modal-close" id="closeShareModal">×</button>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Shareable Link</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="shareLink" class="input-control" readonly style="flex: 1;" />
+            <button class="panel-button secondary" id="copyLinkBtn">Copy</button>
+            <button class="panel-button secondary" id="generateLinkBtn">Generate</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Cloud Storage</label>
+          <button class="panel-button" id="saveToCloudBtn">Save to Cloud</button>
+          <button class="panel-button secondary" id="loadFromCloudBtn">Load from Cloud</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Print Preview Modal -->
+    <div class="modal" id="printModal">
+      <div class="modal-content" style="max-width: 90%; max-height: 90vh;">
+        <div class="modal-header">
+          <div class="modal-title">Print Preview</div>
+          <button class="modal-close" id="closePrintModal">×</button>
+        </div>
+        <div id="printPreview" style="background: white; padding: 20px; border-radius: 8px; max-height: 70vh; overflow: auto;">
+          <!-- Print preview will be rendered here -->
+        </div>
+        <div style="margin-top: 16px; display: flex; gap: 8px;">
+          <button class="panel-button" id="printConfirmBtn">Print</button>
+          <button class="panel-button secondary" id="printCancelBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crop Tool Modal -->
+    <div class="modal" id="cropModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Crop Image</div>
+          <button class="modal-close" id="closeCropModal">×</button>
+        </div>
+        <div class="control-group">
+          <p style="color: #b3b3b3; font-size: 14px;">Select an image and use the crop handles to adjust the crop area.</p>
+          <button class="panel-button" id="applyCropBtn">Apply Crop</button>
+          <button class="panel-button secondary" id="cancelCropBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load Application JavaScript -->
+    <script src="app.js"></script>
+  </body>
+</html>
