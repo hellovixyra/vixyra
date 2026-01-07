@@ -49,7 +49,7 @@ git push -u origin main
 After your site is live, update the README.md file:
 
 1. Edit `README.md`
-2. Replace `https://yourusername.github.io/react-canvas-editor-master/` with your actual GitHub Pages URL
+2. Replace `https://yourusername.github.io/vixyra/` with your actual GitHub Pages URL
 3. Commit and push:
    ```bash
    git add README.md

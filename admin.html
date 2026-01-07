@@ -494,7 +494,7 @@
       if (confirm('Delete this version?')) {
         const versions = JSON.parse(localStorage.getItem('vixyra_versionHistory') || '[]');
         const filtered = versions.filter(v => v.id !== id);
-        localStorage.setItem('canvasEditor_versionHistory', JSON.stringify(filtered));
+        localStorage.setItem('vixyra_versionHistory', JSON.stringify(filtered));
         showAlert('Version deleted', 'success');
         updateStats();
         loadVersionHistory();
@@ -505,7 +505,7 @@
       if (confirm('Delete this template?')) {
         const templates = JSON.parse(localStorage.getItem('vixyra_userTemplates') || '[]');
         const filtered = templates.filter(t => t.id !== id);
-        localStorage.setItem('canvasEditor_userTemplates', JSON.stringify(filtered));
+        localStorage.setItem('vixyra_userTemplates', JSON.stringify(filtered));
         showAlert('Template deleted', 'success');
         updateStats();
         loadTemplates();
@@ -516,7 +516,7 @@
       if (confirm('Delete this cloud project?')) {
         const projects = JSON.parse(localStorage.getItem('vixyra_cloudProjects') || '[]');
         projects.splice(index, 1);
-        localStorage.setItem('canvasEditor_cloudProjects', JSON.stringify(projects));
+        localStorage.setItem('vixyra_cloudProjects', JSON.stringify(projects));
         showAlert('Cloud project deleted', 'success');
         updateStats();
         loadCloudProjects();
