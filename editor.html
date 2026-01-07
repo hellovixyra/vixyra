@@ -10,8 +10,39 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="logo.svg" />
+    <style>
+      /* Loading overlay for editor */
+      .editor-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(102, 126, 234, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999999;
+        color: white;
+        font-size: 18px;
+        transition: opacity 0.3s;
+      }
+      
+      .editor-loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
   </head>
   <body>
+    <div id="editor-loading" class="editor-loading">
+      <div style="text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 16px; animation: pulse 2s ease-in-out infinite;">🎨</div>
+        <div style="font-weight: 600; margin-bottom: 8px;">Loading Vixyra Editor...</div>
+        <div style="font-size: 14px; opacity: 0.8;">Create. Click. Wow.</div>
+      </div>
+    </div>
     <div class="App">
       <!-- Top Bar -->
       <div class="top-bar">
@@ -518,6 +549,8 @@
     <!-- Load Application JavaScript -->
     <script src="app.js"></script>
     <script src="auth.js"></script>
+    <script src="ui-helpers.js"></script>
+    <script src="onboarding.js"></script>
     <script>
       // Check authentication - redirect to login if not authenticated
       if (typeof AuthService !== 'undefined') {
@@ -533,13 +566,48 @@
         window.location.href = 'login.html?redirect=editor.html';
       }
       
-      // Diagnostic: Check if everything loaded
+      // Hide loading overlay and check for onboarding after page loads
       window.addEventListener('load', function() {
         console.log('✅ Page loaded');
         console.log('✅ Canvas element:', document.getElementById('canvas') ? 'Found' : 'NOT FOUND');
         console.log('✅ app.js loaded:', typeof loadFabricJS !== 'undefined' ? 'Yes' : 'NO');
         console.log('✅ initApp function:', typeof window.initApp !== 'undefined' ? 'Yes' : 'NO');
+        
+        // Hide loading overlay
+        const loadingOverlay = document.getElementById('editor-loading');
+        if (loadingOverlay) {
+          // Wait a bit for canvas to initialize, then hide
+          setTimeout(() => {
+            loadingOverlay.classList.add('hidden');
+            setTimeout(() => {
+              if (loadingOverlay.parentElement) {
+                loadingOverlay.remove();
+              }
+            }, 300);
+          }, 1000);
+        }
+        
+        // Start onboarding for new users (wait for canvas to initialize)
+        setTimeout(() => {
+          if (typeof OnboardingTutorial !== 'undefined' && OnboardingTutorial.shouldShow()) {
+            OnboardingTutorial.start();
+          }
+        }, 3000);
       });
+      
+      // Fallback: Hide loading overlay after a maximum wait time
+      setTimeout(function() {
+        const loadingOverlay = document.getElementById('editor-loading');
+        if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
+          console.warn('⚠️ Loading overlay still visible after 5 seconds, forcing hide');
+          loadingOverlay.classList.add('hidden');
+          setTimeout(() => {
+            if (loadingOverlay.parentElement) {
+              loadingOverlay.remove();
+            }
+          }, 300);
+        }
+      }, 5000);
     </script>
   </body>
 </html>

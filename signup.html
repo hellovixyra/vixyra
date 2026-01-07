@@ -193,26 +193,28 @@
 
     <form id="signupForm">
       <div class="form-group">
-        <label for="name">Full Name</label>
+        <label for="name">Full Name *</label>
         <input type="text" id="name" name="name" placeholder="John Doe" required autocomplete="name" />
       </div>
 
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="email">Email *</label>
         <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email" />
+        <div id="emailStatus" style="margin-top: 8px; font-size: 12px; opacity: 0.8;"></div>
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Password *</label>
         <input type="password" id="password" name="password" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6" />
       </div>
 
       <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
+        <label for="confirmPassword">Confirm Password *</label>
         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required autocomplete="new-password" minlength="6" />
       </div>
 
-      <button type="submit" class="btn-primary" id="signupBtn">Create Account</button>
+      <button type="button" class="btn-primary" id="verifyEmailBtn" style="margin-bottom: 12px;">Verify Email First</button>
+      <button type="submit" class="btn-primary" id="signupBtn" disabled>Create Account</button>
     </form>
 
     <div class="auth-footer">
@@ -220,8 +222,170 @@
     </div>
   </div>
 
+  <script src="email-config.js"></script>
   <script src="auth.js"></script>
+  <script src="ui-helpers.js"></script>
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const verifiedEmail = urlParams.get('email');
+    const isVerified = urlParams.get('verified') === 'true';
+
+    // If coming from verification, restore form data and auto-fill
+    if (verifiedEmail && isVerified) {
+      // Restore form data from sessionStorage
+      const savedFormData = sessionStorage.getItem('vixyra_signup_form_data');
+      if (savedFormData) {
+        try {
+          const formData = JSON.parse(savedFormData);
+          document.getElementById('name').value = formData.name || '';
+          document.getElementById('email').value = formData.email || verifiedEmail;
+          document.getElementById('password').value = formData.password || '';
+          document.getElementById('confirmPassword').value = formData.confirmPassword || '';
+          
+          // Mark email as verified
+          document.getElementById('email').disabled = true;
+          document.getElementById('emailStatus').innerHTML = '<span style="color: #4caf50;">✓ Email verified</span>';
+          document.getElementById('verifyEmailBtn').style.display = 'none';
+          document.getElementById('signupBtn').disabled = false;
+          
+          // Clear saved data after using it
+          sessionStorage.removeItem('vixyra_signup_form_data');
+        } catch (e) {
+          console.error('Error restoring form data:', e);
+          // Fallback: just set email
+          document.getElementById('email').value = verifiedEmail;
+          document.getElementById('email').disabled = true;
+          document.getElementById('emailStatus').innerHTML = '<span style="color: #4caf50;">✓ Email verified</span>';
+          document.getElementById('verifyEmailBtn').style.display = 'none';
+          document.getElementById('signupBtn').disabled = false;
+        }
+      } else {
+        // Fallback: just set email if no saved data
+        document.getElementById('email').value = verifiedEmail;
+        document.getElementById('email').disabled = true;
+        document.getElementById('emailStatus').innerHTML = '<span style="color: #4caf50;">✓ Email verified</span>';
+        document.getElementById('verifyEmailBtn').style.display = 'none';
+        document.getElementById('signupBtn').disabled = false;
+      }
+    }
+
+    // Helper function to show success message
+    function showSuccess(message) {
+      const successMessage = document.getElementById('successMessage');
+      if (successMessage) {
+        successMessage.textContent = message;
+        successMessage.classList.add('show');
+      } else {
+        alert(message);
+      }
+    }
+
+    // Verify email button
+    document.getElementById('verifyEmailBtn').addEventListener('click', async function() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const errorMessage = document.getElementById('errorMessage');
+      const emailStatus = document.getElementById('emailStatus');
+      const verifyBtn = document.getElementById('verifyEmailBtn');
+      
+      // Validate required fields
+      if (!name) {
+        errorMessage.textContent = 'Please enter your full name';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      if (!email) {
+        errorMessage.textContent = 'Please enter your email address';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      // Check if email already exists
+      const users = AuthService.getAllUsers();
+      const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (existingUser) {
+        errorMessage.textContent = 'This email is already registered. Please use a different email or sign in.';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      if (!password) {
+        errorMessage.textContent = 'Please enter a password';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      if (password.length < 6) {
+        errorMessage.textContent = 'Password must be at least 6 characters';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        errorMessage.textContent = 'Passwords do not match';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      // Save form data to sessionStorage before redirecting
+      const formData = {
+        name: name,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
+      };
+      sessionStorage.setItem('vixyra_signup_form_data', JSON.stringify(formData));
+      
+      // Show loading state
+      if (typeof LoadingStates !== 'undefined') {
+        LoadingStates.setButtonLoading(verifyBtn, 'Sending code...');
+      } else {
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Sending code...';
+      }
+      errorMessage.classList.remove('show');
+      
+      try {
+        const result = await AuthService.sendVerificationEmail(email);
+        console.log('Email send result:', result);
+        
+        if (typeof Notifications !== 'undefined') {
+          Notifications.success('Verification code sent! Check your email.');
+        } else {
+          showSuccess('Verification code sent! Redirecting...');
+        }
+      } catch (error) {
+        console.error('Email sending error:', error);
+        const errorMsg = typeof ErrorMessages !== 'undefined'
+          ? ErrorMessages.parse(error)
+          : 'Failed to send verification code. Please try again.';
+        
+        if (typeof Notifications !== 'undefined') {
+          Notifications.error(errorMsg);
+        }
+      } finally {
+        if (typeof LoadingStates !== 'undefined') {
+          LoadingStates.removeButtonLoading(verifyBtn);
+        } else {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify Email First';
+        }
+      }
+      
+      // ALWAYS redirect to verification page after attempting to send email
+      // The code is stored in localStorage, so user can enter it even if there was an error
+      console.log('Redirecting to verification page...');
+      
+      setTimeout(() => {
+        console.log('Navigating to verify-email.html');
+        window.location.href = `verify-email.html?email=${encodeURIComponent(email)}`;
+      }, 1500);
+    });
+
+    // Signup form submission
     document.getElementById('signupForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -248,6 +412,13 @@
         errorMessage.classList.add('show');
         return;
       }
+
+      // Check if email is verified
+      if (!AuthService.isEmailVerified(email)) {
+        errorMessage.textContent = 'Please verify your email first';
+        errorMessage.classList.add('show');
+        return;
+      }
       
       signupBtn.disabled = true;
       signupBtn.textContent = 'Creating account...';
@@ -261,8 +432,14 @@
             window.location.href = 'dashboard.html';
           }, 1500);
         } else {
-          errorMessage.textContent = result.message || 'Failed to create account';
-          errorMessage.classList.add('show');
+          if (result.requiresVerification) {
+            errorMessage.textContent = result.message;
+            errorMessage.classList.add('show');
+            document.getElementById('verifyEmailBtn').style.display = 'block';
+          } else {
+            errorMessage.textContent = result.message || 'Failed to create account';
+            errorMessage.classList.add('show');
+          }
         }
       } catch (error) {
         errorMessage.textContent = 'An error occurred. Please try again.';

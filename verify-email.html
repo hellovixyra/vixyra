@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verify Email - Vixyra</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .auth-header img {
+      height: 50px;
+      width: auto;
+      margin-bottom: 16px;
+    }
+
+    .auth-header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .auth-header p {
+      opacity: 0.9;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .code-input-container {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .code-input {
+      width: 50px;
+      height: 60px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .code-input:focus {
+      outline: none;
+      border-color: white;
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: white;
+      color: #667eea;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      text-decoration: none;
+      opacity: 0.9;
+      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    .error-message {
+      background: rgba(255, 68, 68, 0.2);
+      border: 1px solid rgba(255, 68, 68, 0.5);
+      color: #ffcccc;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      color: #c8e6c9;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .info-box {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .resend-link {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .resend-link a {
+      color: white;
+      text-decoration: none;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .resend-link a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .timer {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <a href="signup.html" class="back-link">← Back</a>
+  
+  <div class="auth-container">
+    <div class="auth-header">
+      <img src="logo.svg" alt="Vixyra Logo" />
+      <h1>Verify Your Email</h1>
+      <p>We've sent a 6-digit verification code to your email address</p>
+    </div>
+
+    <div class="info-box" id="emailInfoBox">
+      <strong>📧 Verification code sent to your email</strong><br>
+      <strong>Note:</strong> Check your email inbox for the 6-digit code. The code expires in 10 minutes.
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+
+    <form id="verifyForm">
+      <div class="form-group">
+        <label>Enter 6-digit code</label>
+        <div class="code-input-container">
+          <input type="text" class="code-input" id="code1" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+          <input type="text" class="code-input" id="code2" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+          <input type="text" class="code-input" id="code3" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+          <input type="text" class="code-input" id="code4" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+          <input type="text" class="code-input" id="code5" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+          <input type="text" class="code-input" id="code6" maxlength="1" pattern="[0-9]" inputmode="numeric" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" id="verifyBtn">Verify Email</button>
+      <button type="button" class="btn-secondary" id="resendBtn" onclick="resendCode()">Resend Code</button>
+      
+      <div class="timer" id="timer">Code expires in <span id="timerValue">10:00</span></div>
+      
+      <div class="resend-link">
+        <a href="signup.html">Change email address</a>
+      </div>
+    </form>
+  </div>
+
+  <script src="email-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="ui-helpers.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email') || '';
+    let countdownInterval = null;
+
+    // Auto-focus first input
+    document.getElementById('code1').focus();
+
+    // Auto-advance to next input
+    const codeInputs = ['code1', 'code2', 'code3', 'code4', 'code5', 'code6'];
+    codeInputs.forEach((id, index) => {
+      const input = document.getElementById(id);
+      input.addEventListener('input', function(e) {
+        if (e.target.value && index < codeInputs.length - 1) {
+          document.getElementById(codeInputs[index + 1]).focus();
+        }
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          document.getElementById(codeInputs[index - 1]).focus();
+        }
+      });
+      input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pasted = e.clipboardData.getData('text').replace(/\D/g, '').substring(0, 6);
+        for (let i = 0; i < pasted.length && i < codeInputs.length; i++) {
+          document.getElementById(codeInputs[i]).value = pasted[i];
+        }
+        if (pasted.length === 6) {
+          document.getElementById(codeInputs[5]).focus();
+        }
+      });
+    });
+
+    // Start countdown timer
+    function startTimer(minutes = 10) {
+      let seconds = minutes * 60;
+      const timerValue = document.getElementById('timerValue');
+      const timer = document.getElementById('timer');
+      
+      if (countdownInterval) clearInterval(countdownInterval);
+      
+      countdownInterval = setInterval(() => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerValue.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        
+        if (seconds <= 0) {
+          clearInterval(countdownInterval);
+          timer.innerHTML = '<span style="color: #ffcccc;">Code expired. Please request a new one.</span>';
+          document.getElementById('verifyBtn').disabled = true;
+        }
+        seconds--;
+      }, 1000);
+    }
+
+    startTimer(10);
+
+    // Verify form submission
+    document.getElementById('verifyForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const code = codeInputs.map(id => document.getElementById(id).value).join('');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      const verifyBtn = document.getElementById('verifyBtn');
+      
+      errorMessage.classList.remove('show');
+      successMessage.classList.remove('show');
+      
+      if (code.length !== 6) {
+        errorMessage.textContent = 'Please enter the complete 6-digit code';
+        errorMessage.classList.add('show');
+        return;
+      }
+      
+      // Show loading state
+      if (typeof LoadingStates !== 'undefined') {
+        LoadingStates.setButtonLoading(verifyBtn, 'Verifying...');
+      } else {
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Verifying...';
+      }
+      
+      try {
+        const result = await AuthService.verifyEmailCode(email, code);
+        if (result.success) {
+          if (typeof Notifications !== 'undefined') {
+            Notifications.success('Email verified successfully!');
+          }
+          successMessage.textContent = 'Email verified successfully! Creating your account...';
+          successMessage.classList.add('show');
+          clearInterval(countdownInterval);
+          
+          // Check if form data exists in sessionStorage
+          const savedFormData = sessionStorage.getItem('vixyra_signup_form_data');
+          if (savedFormData) {
+            try {
+              const formData = JSON.parse(savedFormData);
+              
+              // Auto-create account with saved form data
+              const signupResult = await AuthService.signup(
+                formData.name,
+                formData.email,
+                formData.password
+              );
+              
+              if (signupResult.success) {
+                // Clear saved form data
+                sessionStorage.removeItem('vixyra_signup_form_data');
+                
+                if (typeof Notifications !== 'undefined') {
+                  Notifications.success('Account created! Welcome to Vixyra! 🎨');
+                }
+                successMessage.textContent = 'Account created successfully! Redirecting to dashboard...';
+                setTimeout(() => {
+                  window.location.href = 'dashboard.html';
+                }, 1500);
+              } else {
+                // If signup fails, redirect to signup page with data
+                const errorMsg = typeof ErrorMessages !== 'undefined'
+                  ? ErrorMessages.parse(signupResult)
+                  : signupResult.message || 'Failed to create account';
+                
+                if (typeof Notifications !== 'undefined') {
+                  Notifications.warning(errorMsg);
+                }
+                successMessage.textContent = 'Email verified! Redirecting to complete signup...';
+                setTimeout(() => {
+                  window.location.href = `signup.html?email=${encodeURIComponent(email)}&verified=true`;
+                }, 1500);
+              }
+            } catch (e) {
+              console.error('Error creating account:', e);
+              const errorMsg = typeof ErrorMessages !== 'undefined'
+                ? ErrorMessages.parse(e)
+                : 'Error creating account';
+              
+              if (typeof Notifications !== 'undefined') {
+                Notifications.error(errorMsg);
+              }
+              // Fallback: redirect to signup page
+              successMessage.textContent = 'Email verified! Redirecting to complete signup...';
+              setTimeout(() => {
+                window.location.href = `signup.html?email=${encodeURIComponent(email)}&verified=true`;
+              }, 1500);
+            }
+          } else {
+            // No saved form data, redirect to signup page
+            successMessage.textContent = 'Email verified! Redirecting to complete signup...';
+            setTimeout(() => {
+              window.location.href = `signup.html?email=${encodeURIComponent(email)}&verified=true`;
+            }, 1500);
+          }
+        } else {
+          const errorMsg = typeof ErrorMessages !== 'undefined'
+            ? ErrorMessages.getMessage('INVALID_CODE', result.message)
+            : (result.message || 'Invalid verification code');
+          
+          errorMessage.textContent = errorMsg;
+          errorMessage.classList.add('show');
+          
+          if (typeof Notifications !== 'undefined') {
+            Notifications.error(errorMsg);
+          }
+          
+          // Clear inputs on error
+          codeInputs.forEach(id => document.getElementById(id).value = '');
+          document.getElementById('code1').focus();
+        }
+      } catch (error) {
+        const errorMsg = typeof ErrorMessages !== 'undefined'
+          ? ErrorMessages.parse(error)
+          : 'An error occurred. Please try again.';
+        
+        errorMessage.textContent = errorMsg;
+        errorMessage.classList.add('show');
+        
+        if (typeof Notifications !== 'undefined') {
+          Notifications.error(errorMsg);
+        }
+      } finally {
+        if (typeof LoadingStates !== 'undefined') {
+          LoadingStates.removeButtonLoading(verifyBtn);
+        } else {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify Email';
+        }
+      }
+    });
+
+    // Resend code
+    async function resendCode() {
+      const resendBtn = document.getElementById('resendBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      
+      resendBtn.disabled = true;
+      resendBtn.textContent = 'Sending...';
+      errorMessage.classList.remove('show');
+      successMessage.classList.remove('show');
+      
+      try {
+        const result = await AuthService.sendVerificationEmail(email);
+        if (result.success) {
+          if (result.requiresManualCheck) {
+            successMessage.textContent = 'Please check your email inbox. If you did not receive the code, contact hello.vixyra@gmail.com';
+          } else {
+            successMessage.textContent = 'New verification code sent to your email!';
+          }
+          successMessage.classList.add('show');
+          startTimer(10);
+          // Clear inputs
+          codeInputs.forEach(id => document.getElementById(id).value = '');
+          document.getElementById('code1').focus();
+        } else {
+          errorMessage.textContent = result.message || 'Failed to send code';
+          errorMessage.classList.add('show');
+        }
+      } catch (error) {
+        errorMessage.textContent = 'An error occurred. Please try again.';
+        errorMessage.classList.add('show');
+      } finally {
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend Code';
+      }
+    }
+
+    // If email is in URL, show it
+    if (email) {
+      const infoBox = document.getElementById('emailInfoBox');
+      if (infoBox) {
+        infoBox.innerHTML = `<strong>📧 Verification code sent to:</strong> ${email}<br><strong>Note:</strong> Check your email inbox for the 6-digit code. The code expires in 10 minutes.`;
+      }
+    }
+  </script>
+</body>
+</html>
+

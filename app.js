@@ -46,6 +46,16 @@ function loadFabricJS() {
 const ErrorHandler = {
   showError: function(message, error = null) {
     console.error('❌ Error:', message, error);
+    
+    // Use new notification system if available
+    if (typeof Notifications !== 'undefined') {
+      const errorMsg = typeof ErrorMessages !== 'undefined'
+        ? ErrorMessages.parse(error || message)
+        : message;
+      Notifications.error(errorMsg);
+      return;
+    }
+    
     // Create error notification
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -81,6 +91,12 @@ const ErrorHandler = {
   },
   
   showSuccess: function(message) {
+    // Use new notification system if available
+    if (typeof Notifications !== 'undefined') {
+      Notifications.success(message);
+      return;
+    }
+    
     const notification = document.createElement('div');
     notification.style.cssText = `
       position: fixed;
@@ -655,15 +671,48 @@ window.initApp = function initApp() {
       
       console.log('✅ Canvas initialized successfully');
       ErrorHandler.showSuccess('Vixyra ready! Create. Click. Wow.');
+      
+      // Hide loading overlay if it exists
+      const loadingOverlay = document.getElementById('editor-loading');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          if (loadingOverlay.parentElement) {
+            loadingOverlay.remove();
+          }
+        }, 300);
+      }
     } catch (error) {
       ErrorHandler.showError('Error setting up event listeners', error);
       // Try again with delegation only
       setTimeout(() => {
         ErrorHandler.safeExecute(() => setupEventDelegation(), 'Failed to setup event delegation');
       }, 500);
+      
+      // Hide loading overlay even on error
+      const loadingOverlay = document.getElementById('editor-loading');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          if (loadingOverlay.parentElement) {
+            loadingOverlay.remove();
+          }
+        }, 300);
+      }
     }
   } catch (error) {
     ErrorHandler.showError('Error initializing canvas', error);
+    
+    // Hide loading overlay even on error
+    const loadingOverlay = document.getElementById('editor-loading');
+    if (loadingOverlay) {
+      loadingOverlay.classList.add('hidden');
+      setTimeout(() => {
+        if (loadingOverlay.parentElement) {
+          loadingOverlay.remove();
+        }
+      }, 300);
+    }
   }
 };
 
@@ -1753,7 +1802,16 @@ function saveToCloud() {
     const projectName = prompt('Enter project name:', 'Untitled Project');
     if (projectName) {
       projectData.name = projectName;
-      const result = AuthService.saveUserProject(projectData);
+      
+      // Generate thumbnail from canvas
+      let thumbnail = null;
+      try {
+        thumbnail = canvas.toDataURL({ format: 'png', quality: 0.5, multiplier: 0.3 });
+      } catch (e) {
+        console.warn('Could not generate thumbnail:', e);
+      }
+      
+      const result = AuthService.saveUserProject(projectData, thumbnail);
       if (result.success) {
         ErrorHandler.showSuccess('Project saved to your account!');
       } else {
@@ -2118,13 +2176,48 @@ function saveProject() {
       const projectName = prompt('Enter project name:', 'Untitled Project');
       if (projectName) {
         projectData.name = projectName;
-        const result = AuthService.saveUserProject(projectData);
+        
+        // Show loading
+        const saveBtn = document.getElementById('saveProjectBtn');
+        if (saveBtn && typeof LoadingStates !== 'undefined') {
+          LoadingStates.setButtonLoading(saveBtn, 'Saving...');
+        }
+        
+        // Generate thumbnail from canvas
+        let thumbnail = null;
+        try {
+          thumbnail = canvas.toDataURL({ format: 'png', quality: 0.5, multiplier: 0.3 });
+        } catch (e) {
+          console.warn('Could not generate thumbnail:', e);
+        }
+        
+        const result = AuthService.saveUserProject(projectData, thumbnail);
         if (result.success) {
-          ErrorHandler.showSuccess('Project saved to your account!');
+          if (typeof Notifications !== 'undefined') {
+            Notifications.success('Project saved to your account!');
+          } else {
+            ErrorHandler.showSuccess('Project saved to your account!');
+          }
           document.getElementById('fileModal').classList.remove('active');
+          
+          if (saveBtn && typeof LoadingStates !== 'undefined') {
+            LoadingStates.removeButtonLoading(saveBtn);
+          }
           return;
         } else {
-          ErrorHandler.showError(result.message || 'Failed to save project');
+          const errorMsg = typeof ErrorMessages !== 'undefined'
+            ? ErrorMessages.getMessage('PROJECT_SAVE_FAILED', result.message)
+            : (result.message || 'Failed to save project');
+          
+          if (typeof Notifications !== 'undefined') {
+            Notifications.error(errorMsg);
+          } else {
+            ErrorHandler.showError(errorMsg);
+          }
+        }
+        
+        if (saveBtn && typeof LoadingStates !== 'undefined') {
+          LoadingStates.removeButtonLoading(saveBtn);
         }
       }
     }
@@ -2399,10 +2492,41 @@ setInterval(() => {
 // Check for shareable link in URL
 function checkShareableLink() {
   const urlParams = new URLSearchParams(window.location.search);
-  const shareData = urlParams.get('share');
-  if (shareData && canvas) {
+  const shareId = urlParams.get('share');
+  if (shareId && canvas) {
     try {
-      const projectData = JSON.parse(atob(shareData));
+      // Try to load from share ID (new method)
+      if (typeof AuthService !== 'undefined') {
+        const project = AuthService.getProjectByShareId(shareId);
+        if (project && project.data) {
+          const projectData = project.data;
+          if (projectData.canvas) {
+            canvas.loadFromJSON(projectData.canvas, function() {
+              canvas.renderAll();
+              if (projectData.dimensions) {
+                canvas.setWidth(projectData.dimensions.width);
+                canvas.setHeight(projectData.dimensions.height);
+              }
+              if (projectData.backgroundColor) {
+                backgroundColor = projectData.backgroundColor;
+                canvas.backgroundColor = backgroundColor;
+              }
+              if (projectData.pages) {
+                pages = projectData.pages;
+                currentPage = projectData.currentPage || 0;
+                updatePageDisplay();
+              }
+              updateLayersList();
+              canvas.renderAll();
+              ErrorHandler.showSuccess('Shared project loaded!');
+            });
+            return;
+          }
+        }
+      }
+      
+      // Fallback to old base64 method
+      const projectData = JSON.parse(atob(shareId));
       if (projectData.canvas) {
         canvas.loadFromJSON(projectData.canvas, function() {
           canvas.renderAll();
@@ -2420,6 +2544,7 @@ function checkShareableLink() {
       }
     } catch (error) {
       console.error('Error loading shareable link:', error);
+      ErrorHandler.showError('Failed to load shared project');
     }
   }
 }

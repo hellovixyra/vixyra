@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Profile - Vixyra</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: white;
+      color: #667eea;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-danger {
+      background: rgba(255, 68, 68, 0.2);
+      color: #ffcccc;
+      border: 1px solid rgba(255, 68, 68, 0.5);
+    }
+
+    .btn-danger:hover {
+      background: rgba(255, 68, 68, 0.3);
+    }
+
+    .profile-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .avatar-section {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .avatar-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+    }
+
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-upload {
+      flex: 1;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .file-input-label {
+      display: inline-block;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .file-input-label:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .error-message {
+      background: rgba(255, 68, 68, 0.2);
+      border: 1px solid rgba(255, 68, 68, 0.5);
+      color: #ffcccc;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      color: #c8e6c9;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .danger-zone {
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+
+    .danger-zone-title {
+      font-size: 18px;
+      color: #ffcccc;
+      margin-bottom: 12px;
+    }
+
+    .danger-zone p {
+      opacity: 0.9;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="dashboard.html" class="logo">
+        <img src="logo.svg" alt="Vixyra Logo" />
+        <span>Vixyra</span>
+      </a>
+      <div>
+        <a href="dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </header>
+
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <h2 class="section-title">Edit Profile</h2>
+      
+      <form id="profileForm">
+        <div class="avatar-section">
+          <div class="avatar-preview" id="avatarPreview">U</div>
+          <div class="avatar-upload">
+            <div class="file-input-wrapper">
+              <input type="file" id="avatarInput" accept="image/*" />
+              <label for="avatarInput" class="file-input-label">Upload Avatar</label>
+            </div>
+            <p style="font-size: 12px; opacity: 0.7; margin-top: 8px;">JPG, PNG or GIF. Max 2MB</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+          <p style="font-size: 12px; opacity: 0.7; margin-top: 4px;">Changing email requires re-verification</p>
+        </div>
+
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Change Password Section -->
+    <div class="profile-section">
+      <h2 class="section-title">Change Password</h2>
+      
+      <form id="passwordForm">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input type="password" id="currentPassword" name="currentPassword" required />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" name="newPassword" required minlength="6" />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmNewPassword">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" name="confirmNewPassword" required minlength="6" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Change Password</button>
+      </form>
+    </div>
+
+    <!-- Account Settings Section -->
+    <div class="profile-section">
+      <h2 class="section-title">Account Settings</h2>
+      
+      <form id="settingsForm">
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <input type="checkbox" id="autoSave" style="width: auto;" />
+            <span>Enable auto-save</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="theme">Theme</label>
+          <select id="theme" style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; font-size: 16px;">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="auto">Auto</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </form>
+    </div>
+
+    <!-- Delete Account Section -->
+    <div class="profile-section danger-zone">
+      <h2 class="danger-zone-title">Danger Zone</h2>
+      <p>Once you delete your account, there is no going back. Please be certain.</p>
+      <button type="button" class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="ui-helpers.js"></script>
+  <script>
+    // Check authentication
+    if (!AuthService.isAuthenticated()) {
+      window.location.href = 'login.html?redirect=profile.html';
+    }
+
+    const user = AuthService.getCurrentUser();
+    if (!user) {
+      window.location.href = 'login.html';
+    }
+
+    // Load user data
+    function loadUserData() {
+      document.getElementById('name').value = user.name || '';
+      document.getElementById('email').value = user.email || '';
+      document.getElementById('bio').value = user.profile?.bio || '';
+      document.getElementById('autoSave').checked = user.profile?.preferences?.autoSave !== false;
+      document.getElementById('theme').value = user.profile?.preferences?.theme || 'light';
+      
+      // Avatar
+      const avatarPreview = document.getElementById('avatarPreview');
+      if (user.profile?.avatar) {
+        avatarPreview.innerHTML = `<img src="${user.profile.avatar}" alt="Avatar" />`;
+      } else {
+        avatarPreview.textContent = (user.name || 'U').charAt(0).toUpperCase();
+      }
+    }
+
+    loadUserData();
+
+    // Avatar upload
+    document.getElementById('avatarInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          showError('Image size must be less than 2MB');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const avatarPreview = document.getElementById('avatarPreview');
+          avatarPreview.innerHTML = `<img src="${e.target.result}" alt="Avatar" />`;
+          // Store as base64 for now (in production, upload to server)
+          user.profile = user.profile || {};
+          user.profile.avatar = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Profile form
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const bio = document.getElementById('bio').value;
+      const avatar = user.profile?.avatar || null;
+      
+      const updates = {
+        name: name,
+        email: email,
+        bio: bio,
+        avatar: avatar
+      };
+      
+      const result = AuthService.updateProfile(updates);
+      if (result.success) {
+        showSuccess('Profile updated successfully!');
+        user.name = name;
+        user.email = email;
+        user.profile = { ...user.profile, bio: bio, avatar: avatar };
+        loadUserData();
+      } else {
+        showError(result.message || 'Failed to update profile');
+      }
+    });
+
+    // Password form
+    document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmNewPassword').value;
+      
+      if (newPassword !== confirmPassword) {
+        const errorMsg = typeof ErrorMessages !== 'undefined'
+          ? ErrorMessages.getMessage('PASSWORDS_DONT_MATCH')
+          : 'New passwords do not match';
+        showError(errorMsg);
+        if (typeof Notifications !== 'undefined') {
+          Notifications.error(errorMsg);
+        }
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        const errorMsg = typeof ErrorMessages !== 'undefined'
+          ? ErrorMessages.getMessage('INVALID_PASSWORD')
+          : 'Password must be at least 6 characters';
+        showError(errorMsg);
+        if (typeof Notifications !== 'undefined') {
+          Notifications.error(errorMsg);
+        }
+        return;
+      }
+      
+      // Show loading
+      if (typeof LoadingStates !== 'undefined') {
+        LoadingStates.setButtonLoading(submitBtn, 'Changing password...');
+      }
+      
+      const result = AuthService.changePassword(currentPassword, newPassword);
+      if (result.success) {
+        if (typeof Notifications !== 'undefined') {
+          Notifications.success('Password changed successfully!');
+        }
+        showSuccess('Password changed successfully!');
+        document.getElementById('passwordForm').reset();
+      } else {
+        const errorMsg = typeof ErrorMessages !== 'undefined'
+          ? ErrorMessages.parse(result)
+          : (result.message || 'Failed to change password');
+        showError(errorMsg);
+        if (typeof Notifications !== 'undefined') {
+          Notifications.error(errorMsg);
+        }
+      }
+      
+      if (typeof LoadingStates !== 'undefined') {
+        LoadingStates.removeButtonLoading(submitBtn);
+      }
+    });
+
+    // Settings form
+    document.getElementById('settingsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const autoSave = document.getElementById('autoSave').checked;
+      const theme = document.getElementById('theme').value;
+      
+      const updates = {
+        preferences: {
+          autoSave: autoSave,
+          theme: theme
+        }
+      };
+      
+      const result = AuthService.updateProfile(updates);
+      if (result.success) {
+        showSuccess('Settings saved successfully!');
+      } else {
+        showError(result.message || 'Failed to save settings');
+      }
+    });
+
+    // Delete account
+    function deleteAccount() {
+      if (!confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
+        return;
+      }
+      
+      if (!confirm('This will delete all your projects and data. Type DELETE to confirm.')) {
+        return;
+      }
+      
+      const confirmation = prompt('Type DELETE to confirm account deletion:');
+      if (confirmation !== 'DELETE') {
+        showError('Account deletion cancelled');
+        return;
+      }
+      
+      // Delete user account
+      const users = AuthService.getAllUsers();
+      const filtered = users.filter(u => u.id !== user.id);
+      localStorage.setItem('vixyra_users', JSON.stringify(filtered));
+      
+      // Delete user projects
+      localStorage.removeItem(`vixyra_projects_${user.id}`);
+      
+      // Logout
+      AuthService.logout();
+      
+      alert('Account deleted successfully');
+      window.location.href = 'index.html';
+    }
+
+    function showError(message) {
+      const errorMsg = document.getElementById('errorMessage');
+      errorMsg.textContent = message;
+      errorMsg.classList.add('show');
+      setTimeout(() => errorMsg.classList.remove('show'), 5000);
+      
+      if (typeof Notifications !== 'undefined') {
+        Notifications.error(message);
+      }
+    }
+
+    function showSuccess(message) {
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = message;
+      successMsg.classList.add('show');
+      setTimeout(() => successMsg.classList.remove('show'), 3000);
+      
+      if (typeof Notifications !== 'undefined') {
+        Notifications.success(message);
+      }
+    }
+  </script>
+</body>
+</html>
+
